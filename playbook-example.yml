@@ -1,0 +1,28 @@
+---
+- name: Slurp Up remote Vars
+  hosts: all
+  serial: 1
+  order: sorted
+  strategy: free
+  gather_facts: true
+  ignore_unreachable: true
+  vars:
+    slurp_file: /path/2/remote/file/2/slurp.yml
+
+  tasks:
+    - name: Get content of remote file
+      ansible.builtin.slurp:
+        src: {{ slurp_file }}
+      register: remote_file
+    - name: Interpret remote file content as yaml and store as dictionary
+      ansible.builtin.set_fact:
+        remote_yaml_dict: '{{ remote_file.content | b64decode | from_yaml }}'
+      when: remote_file.content is defined and remote_file.content | length > 0
+    - name: Set each key-value pair as a separate playbook variable
+      ansible.builtin.set_fact:
+        "{{ item.key }}": "{{ item.value }}"
+      loop: "{{ remote_yaml_dict | dict2items }}"
+      #output vars being set, can be removed
+      loop_control:
+        label: "Setting variable {{ item.key }} to {{ item.value }}"
+      when: remote_yaml_dict is defined

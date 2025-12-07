@@ -1,0 +1,7 @@
+#Example Slurp Variable file
+string_var: "A Wild string."
+int_var: 42
+bool_var: true
+variable_block: |
+  Yes,
+  Multiline vars work.
