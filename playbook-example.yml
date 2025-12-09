@@ -12,7 +12,7 @@
   tasks:
     - name: Get content of remote file
       ansible.builtin.slurp:
-        src: "{{ slurp_file }"}
+        src: "{{ slurp_file }}"
       register: remote_file
     - name: Interpret remote file content as yaml and store as dictionary
       ansible.builtin.set_fact:
